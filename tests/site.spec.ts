@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 
 for (const viewport of [
+  { width: 3846, height: 1788 },
+  { width: 1920, height: 900 },
   { width: 1440, height: 1000 },
   { width: 1280, height: 720 },
   { width: 390, height: 844 },
@@ -21,9 +23,21 @@ for (const viewport of [
     expect(
       await page.locator('picture img').evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)
     ).toBe(true);
+    const image = await page.locator('picture img').evaluate((img: HTMLImageElement) => {
+      const bounds = img.getBoundingClientRect();
+      return {
+        ratio: bounds.width / bounds.height,
+        naturalRatio: img.naturalWidth / img.naturalHeight,
+        center: bounds.x + bounds.width / 2,
+        bottom: bounds.bottom,
+      };
+    });
+    expect(image.ratio).toBeCloseTo(image.naturalRatio, 2);
+    expect(image.center).toBeCloseTo(viewport.width / 2, 0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     const hero = await page.locator('#product').boundingBox();
     expect(hero!.y + hero!.height).toBeLessThan(viewport.height);
+    expect(image.bottom).toBeCloseTo(hero!.y + hero!.height, 0);
     for (const href of await page
       .locator('a[href^="#"]')
       .evaluateAll((links) => links.map((link) => link.getAttribute('href')!))) {
