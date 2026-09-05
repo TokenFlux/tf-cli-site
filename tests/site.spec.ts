@@ -49,6 +49,23 @@ for (const viewport of [
   });
 }
 
+test('client strip uses the four dedicated brand marks', async ({ page }) => {
+  await page.goto('./');
+  for (const name of ['claudecode', 'codex', 'opencode', 'pi']) {
+    const icon = page.locator(`.client-name [data-icon="client-${name}"]`);
+    await expect(icon).toHaveCount(1);
+    await expect(icon).toHaveAttribute('viewBox', '0 0 24 24');
+    await expect(icon).toHaveAttribute('aria-hidden', 'true');
+    const bounds = await icon.boundingBox();
+    expect(bounds!.width).toBe(28);
+    expect(bounds!.height).toBe(28);
+  }
+  await expect(page.locator('.client-name')).toHaveText(['Claude Code', 'Codex', 'OpenCode', 'Pi'], {
+    useInnerText: true,
+  });
+  await page.locator('.clients').screenshot({ path: 'test-results/client-brand-icons.png' });
+});
+
 test('installation selection and copy', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto('./#install');

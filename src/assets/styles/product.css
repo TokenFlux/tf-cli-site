@@ -224,14 +224,12 @@ select:focus-visible {
   white-space: nowrap;
 }
 .client-name svg {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
+  flex: none;
 }
 .claude-icon {
-  color: #b17458;
-}
-.pi-icon {
-  color: #8c6495;
+  color: #d97757;
 }
 h2 {
   font-size: 36px !important;
