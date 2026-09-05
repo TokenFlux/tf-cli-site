@@ -1,0 +1,47 @@
+site:
+  name: tf-cli
+  site: 'https://tokenflux.github.io'
+  base: '/tf-cli-site'
+  trailingSlash: true
+
+metadata:
+  title:
+    default: 'tf-cli · AI 编程工具的统一入口'
+    template: '%s · tf-cli'
+  description: '一条 tf 命令，启动 Claude Code、Codex、OpenCode 和 Pi。管理网关凭据与模型，不改客户端全局配置。开源，免费，支持 TokenFlux 与自建 TokenRouter。'
+  robots:
+    index: true
+    follow: true
+  openGraph:
+    site_name: tf-cli
+    images:
+      - url: '/tf-cli-site/assets/social.png'
+        width: 1200
+        height: 630
+    type: website
+  twitter:
+    cardType: summary_large_image
+
+i18n:
+  language: zh-CN
+  textDirection: ltr
+
+apps:
+  blog:
+    isEnabled: false
+    post:
+      isEnabled: false
+    list:
+      isEnabled: false
+    category:
+      isEnabled: false
+    tag:
+      isEnabled: false
+
+analytics:
+  vendors:
+    googleAnalytics:
+      id: null
+
+ui:
+  theme: 'light:only'

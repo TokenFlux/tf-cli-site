@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tokenflux.github.io/tf-cli-site/sitemap-index.xml

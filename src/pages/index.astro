@@ -1,0 +1,157 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import Hero from '~/components/widgets/Hero.astro';
+import Features from '~/components/widgets/Features.astro';
+import FAQs from '~/components/widgets/FAQs.astro';
+import Install from '~/components/Install.astro';
+import Button from '~/components/ui/Button.astro';
+import { Icon } from 'astro-icon/components';
+import { getAsset } from '~/utils/permalinks';
+
+const repo = 'https://github.com/TokenFlux/tf-cli';
+---
+
+<Layout metadata={{ title: 'tf-cli · AI 编程工具的统一入口', ignoreTitleTemplate: true }}>
+  <Hero
+    id="product"
+    tagline="开源 · 免费 · 为终端而生"
+    title="tf-cli"
+    actions={[
+      { text: '安装 tf-cli', href: '#install', variant: 'primary', icon: 'tabler:arrow-down' },
+      { text: '查看源码', href: repo, icon: 'tabler:brand-github' },
+    ]}
+  >
+    <Fragment slot="subtitle"
+      ><strong class="hero-offer">你的 AI 编程工具，一个入口。</strong><span class="hero-description"
+        >管理网关、Key 和模型。<br class="mobile-break" />不改变你熟悉的工作方式。</span
+      ></Fragment
+    >
+    <Fragment slot="content"
+      ><a class="release-link" href={`${repo}/releases/tag/v0.8.0`}
+        ><span class="release-dot"></span>v0.8.0 已发布 <Icon name="tabler:arrow-up-right" /></a
+      ></Fragment
+    >
+    <Fragment slot="bg"
+      ><picture class="hero-product-image"
+        ><source media="(max-width: 640px)" srcset={getAsset('/assets/terminal-mobile.png')} /><img
+          src={getAsset('/assets/terminal.png')}
+          alt=""
+          width="1440"
+          height="1000"
+          fetchpriority="high"
+        /></picture
+      ></Fragment
+    >
+  </Hero>
+  <p class="sr-only">
+    终端截图展示 tf status 的输出：示例账户可用额度为 93.4 推理积分，今日 117 次请求，实际扣费 6.4993
+    推理积分。四个客户端分别绑定了各自的模型。
+  </p>
+
+  <section class="clients" aria-label="支持的客户端">
+    <div class="clients-inner">
+      <span class="clients-caption">熟悉的客户端，<br />同一个入口。</span><span class="client-name"
+        ><Icon name="tabler:asterisk" class="claude-icon" />Claude Code</span
+      ><span class="client-name"><Icon name="tabler:brand-openai" />Codex</span><span class="client-name"
+        ><Icon name="tabler:terminal" />OpenCode</span
+      ><span class="client-name"><Icon name="tabler:math-pi" class="pi-icon" />Pi</span>
+    </div>
+  </section>
+
+  <Features
+    id="why-tf"
+    tagline="少一点配置，多一点专注"
+    title="换工具，不用重来一遍。"
+    subtitle="把连接的事情交给 tf，把编程的事情留给你的客户端。"
+    columns={3}
+    items={[
+      {
+        title: '原来的配置，留在原处',
+        description:
+          '仅通过子进程环境和启动参数注入网关配置。不改 Claude、Codex 或 Pi 的全局配置文件，退出后不留下配置覆盖。',
+        icon: 'tabler:layers-intersect',
+      },
+      {
+        title: '不同的 Key，各司其职',
+        description: '按客户端保存 Key 绑定，工作和个人账户各自独立。临时用 -k 换一把，不影响下次的默认选择。',
+        icon: 'tabler:key',
+      },
+      {
+        title: '主模型之外，也配置好',
+        description:
+          '不只管理对话模型，也照顾摘要、标题和代码审查的模型槽。启动前按 Key 与协议校验，减少后台任务静默失败。',
+        icon: 'tabler:adjustments-horizontal',
+      },
+    ]}
+  />
+
+  <section class="workflow-section" aria-labelledby="workflow-title">
+    <div class="workflow-inner">
+      <div class="workflow-copy">
+        <p class="eyebrow">你的选择，始终有效</p><h2 id="workflow-title">这一次换模型，<br />不用改变下一次。</h2><p>
+          临时参数只影响当前启动。想试另一个模型、换工作账户，或调高思考强度，都不必改掉已经顺手的默认配置。
+        </p><a class="text-link" href="https://docs.tokenflux.dev"
+          >在 TokenDocs 了解更多 <Icon name="tabler:arrow-up-right" /></a
+        >
+      </div><div class="command-examples" aria-label="临时启动参数示例">
+        <div><span>换模型</span><code><b>tf</b> claude -m</code></div><div>
+          <span>换账户</span><code><b>tf</b> codex -k work</code>
+        </div><div><span>多想一步</span><code><b>tf</b> pi -e high</code></div><div>
+          <span>继续上次会话</span><code><b>tf</b> claude -- --resume</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="trust-band" aria-label="安全边界">
+    <div>
+      <Icon name="tabler:shield-lock" /><strong>连接可信的网关。</strong><p>
+        支持 TokenFlux 与自建 TokenRouter。Key 以明文保存在本机，文件权限为 0600；tf 不代理会话流量，也不采集遥测。
+      </p><a class="text-link" href={`${repo}/blob/main/SECURITY.md`}
+        >了解安全边界 <Icon name="tabler:arrow-up-right" /></a
+      >
+    </div>
+  </section>
+
+  <Install />
+
+  <FAQs
+    id="faq"
+    tagline="开始之前"
+    title="你可能还想知道"
+    columns={2}
+    items={[
+      {
+        title: 'tf-cli 和 TokenFlux 是什么关系？',
+        description:
+          'tf-cli 是开源的客户端启动与凭据管理工具。你可以连接 TokenFlux 网关，也可以通过 --host 连接自己部署的 TokenRouter。它不是一个新的聊天客户端。',
+      },
+      {
+        title: '使用 tf-cli 需要付费吗？',
+        description:
+          'tf-cli 使用 Apache-2.0 许可证，工具本身免费。模型调用会消耗你所连接网关的额度，费用和可用模型由网关服务决定。',
+      },
+      {
+        title: '会改动我原来的客户端配置吗？',
+        description:
+          '不会写入客户端的全局配置。tf 管理自己的凭据与绑定，在启动时注入当前子进程。已有客户端设置仍可能覆盖注入；tf status 会提示已检测到的冲突。',
+      },
+      {
+        title: '可以在 CI 或容器中使用吗？',
+        description:
+          '可以。通过环境变量 TF_API_KEY 注入 Key，无需先保存本地凭据。配合 --no-input 与明确的模型参数使用；自建网关请显式指定 --host。',
+      },
+    ]}
+  />
+
+  <section class="closing">
+    <div>
+      <p class="eyebrow">把配置留给工具</p><h2>回到你的下一次提交。</h2><div class="closing-actions">
+        <Button variant="primary" href="#install" icon="tabler:terminal-2">安装 tf-cli</Button><Button
+          href="https://docs.tokenflux.dev"
+          icon="tabler:arrow-up-right">打开 TokenDocs</Button
+        >
+      </div>
+    </div><span class="closing-mark" aria-hidden="true">tf<span>_</span></span>
+  </section>
+</Layout>

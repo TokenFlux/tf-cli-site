@@ -1,0 +1,106 @@
+---
+import { Icon } from 'astro-icon/components';
+import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
+import Headline from '~/components/ui/Headline.astro';
+const methods = [
+  {
+    id: 'npm',
+    name: 'npm',
+    command: 'npm install -g @tokenflux/tf',
+    note: '需要 Node.js 18+。支持 macOS、Linux 和 Windows。',
+  },
+  {
+    id: 'shell',
+    name: 'macOS / Linux',
+    command: 'curl -fsSL https://raw.githubusercontent.com/tokenflux/tf-cli/main/install.sh | sh',
+    note: '独立二进制，无需 Node.js。默认安装到 ~/.local/bin，不需要 sudo。',
+  },
+  {
+    id: 'once',
+    name: '单次运行',
+    command: 'npx @tokenflux/tf status',
+    note: '通过 npx 运行，不做全局安装。查看状态需要先保存本地 Key。',
+  },
+];
+---
+
+<WidgetWrapper id="install" containerClass="max-w-5xl">
+  <Headline tagline="开始使用" title="从一条安装命令开始。" subtitle="工具免费开源。模型调用费用由你连接的网关计费。" />
+  <div class="install-tool">
+    <div class="install-toolbar">
+      <label for="install-method">安装方式</label><select id="install-method"
+        >{methods.map((m) => <option value={m.id}>{m.name}</option>)}</select
+      ><span class="platform-note">v0.8.0</span>
+    </div>
+    {
+      methods.map((m, i) => (
+        <div data-install-panel={m.id} hidden={i !== 0}>
+          <>
+            <div class="command-row">
+              <>
+                <span class="shell-prompt" aria-hidden="true">
+                  $
+                </span>
+                <code id={`command-${m.id}`}>{m.command}</code>
+                <button
+                  class="copy-button"
+                  type="button"
+                  data-copy={`command-${m.id}`}
+                  aria-label={`复制 ${m.name} 安装命令`}
+                  title="复制命令"
+                >
+                  <Icon name="tabler:copy" />
+                </button>
+              </>
+            </div>
+            <p class="install-note">{m.note}</p>
+          </>
+        </div>
+      ))
+    }
+    <p class="copy-feedback" aria-live="polite" id="copy-feedback"></p>
+  </div>
+  <div class="onboarding">
+    <div><span>01</span><code>tf login</code><p>从网页导入或粘贴 Key，在终端确认。</p></div><div>
+      <span>02</span><code>tf claude</code><p>选定模型，进入熟悉的编程客户端。</p>
+    </div><div><span>03</span><code>tf status</code><p>随时查看可用额度、今日扣费和模型绑定。</p></div>
+  </div>
+  <p class="install-links">
+    Windows 当前支持非交互模式。<a href="https://docs.tokenflux.dev"
+      >查看 TokenDocs <Icon name="tabler:arrow-up-right" /></a
+    ><a href="https://github.com/TokenFlux/tf-cli/releases/latest"
+      >下载其他平台二进制 <Icon name="tabler:arrow-up-right" /></a
+    >
+  </p>
+</WidgetWrapper>
+<script>
+  const select = document.querySelector<HTMLSelectElement>('#install-method');
+  select?.addEventListener('change', () => {
+    document.querySelectorAll<HTMLElement>('[data-install-panel]').forEach((panel) => {
+      panel.hidden = panel.dataset.installPanel !== select.value;
+    });
+    document.querySelector('#copy-feedback')!.textContent = '';
+  });
+  let feedbackTimer: ReturnType<typeof setTimeout>;
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const command = document.getElementById(button.dataset.copy!)!;
+      const feedback = document.querySelector('#copy-feedback')!;
+      clearTimeout(feedbackTimer);
+      try {
+        await navigator.clipboard.writeText(command.textContent || '');
+        feedback.textContent = '已复制命令';
+      } catch {
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.selectNodeContents(command);
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+        feedback.textContent = '无法访问剪贴板，命令已选中';
+      }
+      feedbackTimer = setTimeout(() => {
+        feedback.textContent = '';
+      }, 3500);
+    });
+  });
+</script>
