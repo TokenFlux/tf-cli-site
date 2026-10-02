@@ -31,7 +31,7 @@ const en = {
     source: 'View source',
     releaseSuffix: 'is out',
     terminalLabel:
-      'Terminal session: tf login imports a key from the browser, tf claude picks a main model and launches Claude Code.',
+      'Terminal session: tf login waits for a web import and confirms writing the key, then tf claude picks a main model and launches Claude Code.',
   },
   clients: {
     caption: 'The clients you know.<br />One entry point.',
@@ -213,7 +213,7 @@ const zh: Dictionary = {
     install: '安装 tf',
     source: '查看源码',
     releaseSuffix: '已发布',
-    terminalLabel: '终端会话：tf login 从浏览器导入 Key，tf claude 选择主模型并启动 Claude Code。',
+    terminalLabel: '终端会话：tf login 等待网页导入并在终端确认写入 Key，然后 tf claude 选择主模型并启动 Claude Code。',
   },
   clients: {
     caption: '熟悉的客户端，<br />同一个入口。',
