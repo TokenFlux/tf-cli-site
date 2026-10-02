@@ -1,3 +1,5 @@
+@import '@fontsource-variable/plus-jakarta-sans';
+@import '@fontsource-variable/geist-mono';
 @import 'tailwindcss';
 
 @plugin "@tailwindcss/typography";
@@ -7,6 +9,33 @@
 @custom-variant intersect (&:not([no-intersect]));
 
 @theme {
+  /* TokenRouter 色板：Blue Archive 青蓝 + zinc 中性 + 深色表面 */
+  --color-primary-50: #f6fcff;
+  --color-primary-100: #ddf4fc;
+  --color-primary-200: #bfeaff;
+  --color-primary-300: #8bddf8;
+  --color-primary-400: #4dd4f6;
+  --color-primary-500: #00d2ff;
+  --color-primary-600: #12a7e8;
+  --color-primary-700: #0b8fd8;
+  --color-primary-800: #176f9e;
+  --color-primary-900: #2d4f68;
+  --color-primary-950: #071a2a;
+
+  /* 深色表面：950 比 900 略亮，作为提升面 */
+  --color-dark-50: #fafafa;
+  --color-dark-100: #f0f0f1;
+  --color-dark-200: #d9d9de;
+  --color-dark-300: #a6a6af;
+  --color-dark-400: #77777f;
+  --color-dark-500: #55555c;
+  --color-dark-600: #333338;
+  --color-dark-700: #29292e;
+  --color-dark-800: #1f1f23;
+  --color-dark-900: #121215;
+  --color-dark-950: #18181b;
+
+  /* AstroWind widget 语义色 → CSS 变量（随 .dark 翻转，见 CustomStyles） */
   --color-primary: var(--aw-color-primary);
   --color-secondary: var(--aw-color-secondary);
   --color-accent: var(--aw-color-accent);
@@ -14,17 +43,28 @@
   --color-muted: var(--aw-color-text-muted);
 
   --font-sans:
-    var(--aw-font-sans, ui-sans-serif), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol', 'Noto Color Emoji';
-  --font-serif: var(--aw-font-serif, ui-serif), ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
-  --font-heading: var(--aw-font-heading, ui-sans-serif), ui-sans-serif, system-ui, sans-serif;
+    'Plus Jakarta Sans Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-serif: var(--font-sans);
+  --font-heading: var(--font-sans);
+  --font-mono: 'Geist Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --animate-fade: fadeInUp 1s both;
+  /* OpenRouter 圆角层级：紧凑 4 / 控件 6 / 表面 8 / 弹窗 12 */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* 默认无投影，边框分层；glow 留给品牌强调 */
+  --shadow-glow: 0 0 20px rgb(0 210 255 / 28%);
+  --shadow-glow-lg: 0 0 40px rgb(18 167 232 / 35%);
+
+  --animate-fade: fadeInUp 0.6s both;
 
   @keyframes fadeInUp {
     0% {
       opacity: 0;
-      transform: translateY(2rem);
+      transform: translateY(1rem);
     }
     100% {
       opacity: 1;
@@ -38,7 +78,7 @@
 }
 
 @utility bg-dark {
-  background-color: var(--aw-color-bg-page-dark);
+  background-color: var(--aw-color-bg-page);
 }
 
 @utility bg-light {
@@ -54,28 +94,25 @@
 }
 
 @utility btn {
-  @apply inline-flex items-center justify-center rounded-full border-gray-400 border bg-transparent font-medium text-center text-base text-page leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200 focus:ring-blue-500 focus:ring-offset-blue-200 focus:ring-2 focus:ring-offset-2 hover:bg-gray-100 hover:border-gray-600 dark:text-slate-300 dark:border-slate-500 dark:hover:bg-slate-800 dark:hover:border-slate-800 cursor-pointer;
+  @apply inline-flex cursor-pointer items-center justify-center rounded-md border border-zinc-300 bg-transparent px-6 py-3 text-center text-base leading-snug font-medium text-page transition-colors duration-150 ease-in md:px-8 dark:border-dark-600;
 }
 
 @utility btn-primary {
-  @apply btn font-semibold bg-primary text-white border-primary hover:bg-secondary hover:border-secondary hover:text-white dark:text-white dark:bg-primary dark:border-primary dark:hover:border-secondary dark:hover:bg-secondary;
+  @apply btn border-primary-700 bg-primary-700 font-semibold text-white hover:border-primary-600 hover:bg-primary-600 dark:border-primary-500 dark:bg-primary-500 dark:text-primary-950 dark:hover:border-primary-400 dark:hover:bg-primary-400;
 }
 
 @utility btn-secondary {
-  @apply btn;
+  @apply btn hover:border-zinc-500 dark:hover:border-dark-300;
 }
 
 @utility btn-tertiary {
-  @apply btn border-none shadow-none text-muted hover:text-gray-900 dark:text-gray-400 dark:hover:text-white;
+  @apply btn border-none text-muted hover:text-zinc-900 dark:hover:text-white;
 }
 
 #header.scroll > div:first-child {
-  @apply bg-page md:bg-white/90 md:backdrop-blur-md;
-  box-shadow: 0 0.375rem 1.5rem 0 rgb(140 152 164 / 13%);
-}
-.dark #header.scroll > div:first-child,
-#header.scroll.dark > div:first-child {
-  @apply bg-page md:bg-[#030621e6] border-b border-gray-500/20;
+  background: color-mix(in srgb, var(--aw-color-bg-page) 88%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--aw-color-border);
   box-shadow: none;
 }
 

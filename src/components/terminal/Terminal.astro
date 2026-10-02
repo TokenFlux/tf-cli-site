@@ -1,0 +1,88 @@
+---
+import type { Frame } from '~/data/hero-session';
+
+export interface Props {
+  frames: Frame[];
+  label: string;
+}
+
+const { frames, label } = Astro.props;
+const id = `term-${Math.random().toString(36).slice(2, 9)}`;
+
+// 服务端渲染最终态：无 JS、prefers-reduced-motion、爬虫都能看到完整会话。
+// JS 接管后清空并按帧重放。
+const lines: { text: string; tone: string }[] = [];
+for (const frame of frames) {
+  if (frame.kind === 'type') {
+    lines.push({ text: `$ ${frame.text}`, tone: 'typed' });
+  } else {
+    lines.push({ text: frame.text, tone: frame.tone ?? 'plain' });
+  }
+}
+---
+
+<div class="terminal" role="img" aria-label={label}>
+  <div class="terminal-chrome" aria-hidden="true">
+    <span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span>
+    <span class="terminal-title">Terminal — tf</span>
+  </div>
+  <div class="terminal-body" id={id} data-frames={JSON.stringify(frames)}>
+    {lines.map((line) => <div class={`term-line term-${line.tone}`}>{line.text}</div>)}
+  </div>
+</div>
+
+<script>
+  import type { Frame } from '~/data/hero-session';
+
+  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function sleep(ms: number) {
+    return new Promise((r) => setTimeout(r, ms));
+  }
+
+  async function play(body: HTMLElement) {
+    const frames: Frame[] = JSON.parse(body.dataset.frames || '[]');
+    if (!frames.length) return;
+
+    for (;;) {
+      // 页面不可见时等待，避免后台白跑
+      while (document.hidden) await sleep(500);
+      body.textContent = '';
+      for (const frame of frames) {
+        if (frame.kind === 'type') {
+          const row = document.createElement('div');
+          row.className = 'term-line term-typed';
+          const prompt = document.createElement('span');
+          prompt.className = 'term-prompt';
+          prompt.textContent = '$ ';
+          const text = document.createElement('span');
+          const cursor = document.createElement('span');
+          cursor.className = 'term-cursor';
+          row.append(prompt, text, cursor);
+          body.append(row);
+          for (const ch of frame.text) {
+            text.textContent += ch;
+            await sleep(55 + Math.random() * 70);
+          }
+          row.querySelector('.term-cursor')?.remove();
+          await sleep(320);
+        } else {
+          await sleep(frame.delay ?? 400);
+          const row = document.createElement('div');
+          row.className = `term-line term-${frame.tone ?? 'plain'}`;
+          row.textContent = frame.text;
+          body.append(row);
+        }
+      }
+      // 播完停留后循环
+      await sleep(6000);
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('.terminal-body[data-frames]').forEach((body) => {
+    if (REDUCED) return; // 保留服务端渲染的最终态
+    play(body).catch(() => {
+      /* 播放失败时保留当前内容即可 */
+    });
+  });
+</script>

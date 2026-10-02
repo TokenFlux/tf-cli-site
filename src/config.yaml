@@ -44,4 +44,4 @@ analytics:
       id: null
 
 ui:
-  theme: 'light:only'
+  theme: 'system'

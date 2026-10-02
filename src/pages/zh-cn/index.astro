@@ -1,0 +1,18 @@
+---
+import PageLayout from '~/layouts/PageLayout.astro';
+import HomePage from '~/components/HomePage.astro';
+import { getHeaderData, getFooterData } from '~/navigation';
+import { dictionaries } from '~/i18n/ui';
+
+const locale = 'zh-cn';
+const t = dictionaries[locale];
+---
+
+<PageLayout
+  metadata={{ title: t.meta.title, ignoreTitleTemplate: true, description: t.meta.description }}
+  lang={locale}
+  headerData={getHeaderData(locale)}
+  footerData={getFooterData(locale)}
+>
+  <HomePage locale={locale} />
+</PageLayout>

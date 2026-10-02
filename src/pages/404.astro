@@ -1,13 +1,19 @@
 ---
 import Layout from '~/layouts/PageLayout.astro';
 import Button from '~/components/ui/Button.astro';
-import { getHomePermalink } from '~/utils/permalinks';
+import { getHeaderData, getFooterData } from '~/navigation';
+import { getRelativeLocaleUrl } from 'astro:i18n';
 ---
 
-<Layout metadata={{ title: '页面不存在', robots: { index: false } }}>
+<Layout
+  metadata={{ title: '页面不存在', robots: { index: false } }}
+  lang="zh-cn"
+  headerData={getHeaderData('zh-cn')}
+  footerData={getFooterData('zh-cn')}
+>
   <section class="mx-auto max-w-3xl px-6 py-24 text-center">
     <p class="eyebrow">404</p><h1 class="text-4xl font-bold mb-6">这个页面不存在。</h1>
     <p class="text-muted mb-8">产品介绍在首页，使用文档在 TokenDocs。</p>
-    <Button href={getHomePermalink()} variant="primary">返回首页</Button>
+    <Button href={getRelativeLocaleUrl('zh-cn')} variant="primary">返回首页</Button>
   </section>
 </Layout>

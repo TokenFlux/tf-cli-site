@@ -1,78 +1,73 @@
 ---
 import { Icon } from 'astro-icon/components';
-import WidgetWrapper from '~/components/ui/WidgetWrapper.astro';
-import Headline from '~/components/ui/Headline.astro';
-const methods = [
-  {
-    id: 'npm',
-    name: 'npm',
-    command: 'npm install -g @tokenflux/tf',
-    note: '需要 Node.js 18+。支持 macOS、Linux 和 Windows。',
-  },
-  {
-    id: 'shell',
-    name: 'macOS / Linux',
-    command: 'curl -fsSL https://raw.githubusercontent.com/tokenflux/tf-cli/main/install.sh | sh',
-    note: '独立二进制，无需 Node.js。默认安装到 ~/.local/bin，不需要 sudo。',
-  },
-  {
-    id: 'once',
-    name: '单次运行',
-    command: 'npx @tokenflux/tf status',
-    note: '通过 npx 运行，不做全局安装。查看状态需要先保存本地 Key。',
-  },
-];
+import type { Dictionary } from '~/i18n/ui';
+
+export interface Props {
+  t: Dictionary;
+  version: string;
+}
+
+const { t, version } = Astro.props;
 ---
 
-<WidgetWrapper id="install" containerClass="max-w-5xl">
-  <Headline tagline="开始使用" title="从一条安装命令开始。" subtitle="工具免费开源。模型调用费用由你连接的网关计费。" />
+<section class="section" id="install" aria-labelledby="install-title">
+  <div class="section-head">
+    <p class="eyebrow">{t.install.tagline}</p>
+    <h2 id="install-title">{t.install.title}</h2>
+    <p class="section-sub">{t.install.subtitle}</p>
+  </div>
   <div class="install-tool">
     <div class="install-toolbar">
-      <label for="install-method">安装方式</label><select id="install-method"
-        >{methods.map((m) => <option value={m.id}>{m.name}</option>)}</select
-      ><span class="platform-note">v0.8.0</span>
+      <label for="install-method">{t.install.methodLabel}</label>
+      <select id="install-method">{t.install.methods.map((m) => <option value={m.id}>{m.name}</option>)}</select>
+      <span class="platform-note">{version}</span>
     </div>
     {
-      methods.map((m, i) => (
+      t.install.methods.map((m, i) => (
         <div data-install-panel={m.id} hidden={i !== 0}>
-          <>
-            <div class="command-row">
-              <>
-                <span class="shell-prompt" aria-hidden="true">
-                  $
-                </span>
-                <code id={`command-${m.id}`}>{m.command}</code>
-                <button
-                  class="copy-button"
-                  type="button"
-                  data-copy={`command-${m.id}`}
-                  aria-label={`复制 ${m.name} 安装命令`}
-                  title="复制命令"
-                >
-                  <Icon name="tabler:copy" />
-                </button>
-              </>
-            </div>
-            <p class="install-note">{m.note}</p>
-          </>
+          <div class="command-row">
+            <span class="shell-prompt" aria-hidden="true">
+              $
+            </span>
+            <code id={`command-${m.id}`}>{m.command}</code>
+            <button
+              class="copy-button"
+              type="button"
+              data-copy={`command-${m.id}`}
+              data-copied={t.install.copied}
+              data-copy-failed={t.install.copyFailed}
+              aria-label={`${t.install.copy}: ${m.name}`}
+              title={t.install.copy}
+            >
+              <Icon name="tabler:copy" />
+            </button>
+          </div>
+          <p class="install-note">{m.note}</p>
         </div>
       ))
     }
     <p class="copy-feedback" aria-live="polite" id="copy-feedback"></p>
   </div>
   <div class="onboarding">
-    <div><span>01</span><code>tf login</code><p>从网页导入或粘贴 Key，在终端确认。</p></div><div>
-      <span>02</span><code>tf claude</code><p>选定模型，进入熟悉的编程客户端。</p>
-    </div><div><span>03</span><code>tf status</code><p>随时查看可用额度、今日扣费和模型绑定。</p></div>
+    {
+      t.install.onboarding.map((step) => (
+        <div>
+          <span>{step.step}</span>
+          <code>{step.cmd}</code>
+          <p>{step.desc}</p>
+        </div>
+      ))
+    }
   </div>
   <p class="install-links">
-    Windows 当前支持非交互模式。<a href="https://docs.tokenflux.dev"
-      >查看 TokenDocs <Icon name="tabler:arrow-up-right" /></a
-    ><a href="https://github.com/TokenFlux/tf-cli/releases/latest"
-      >下载其他平台二进制 <Icon name="tabler:arrow-up-right" /></a
+    {t.install.linksPrefix}
+    <a href="https://docs.tokenflux.dev">{t.install.linksDocs}<Icon name="tabler:arrow-up-right" /></a>
+    <a href="https://github.com/TokenFlux/tf-cli/releases/latest"
+      >{t.install.linksReleases}<Icon name="tabler:arrow-up-right" /></a
     >
   </p>
-</WidgetWrapper>
+</section>
+
 <script>
   const select = document.querySelector<HTMLSelectElement>('#install-method');
   select?.addEventListener('change', () => {
@@ -89,14 +84,14 @@ const methods = [
       clearTimeout(feedbackTimer);
       try {
         await navigator.clipboard.writeText(command.textContent || '');
-        feedback.textContent = '已复制命令';
+        feedback.textContent = button.dataset.copied || 'Copied';
       } catch {
         const selection = window.getSelection();
         const range = document.createRange();
         range.selectNodeContents(command);
         selection?.removeAllRanges();
         selection?.addRange(range);
-        feedback.textContent = '无法访问剪贴板，命令已选中';
+        feedback.textContent = button.dataset.copyFailed || 'Command selected';
       }
       feedbackTimer = setTimeout(() => {
         feedback.textContent = '';
