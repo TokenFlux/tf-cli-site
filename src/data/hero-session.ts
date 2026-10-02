@@ -28,14 +28,14 @@ const en: Frame[] = [
   { kind: 'line', text: '✓ saved as key "ccmax"', tone: 'ok', delay: 650 },
   {
     kind: 'line',
-    parts: [{ text: '  models   6 ' }, { text: 'claude-opus-5-5, claude-sonnet-4-6, …', tone: 'dim' }],
+    parts: [{ text: '  models   6 ' }, { text: 'claude-opus-5-5, claude-sonnet-5-5, …', tone: 'dim' }],
     delay: 200,
   },
   { kind: 'line', text: '  can run  claude pi', delay: 200 },
   { kind: 'type', text: 'tf claude' },
   { kind: 'line', text: 'Pick the main model for claude', tone: 'prompt', delay: 450 },
   { kind: 'line', text: '❯ claude-opus-5-5    ccmax/', tone: 'choice', delay: 250 },
-  { kind: 'line', text: '  claude-sonnet-4-6  ccmax/', tone: 'choice-dim', delay: 250 },
+  { kind: 'line', text: '  claude-sonnet-5-5  ccmax/', tone: 'choice-dim', delay: 250 },
   {
     kind: 'line',
     parts: [
@@ -62,14 +62,14 @@ const zh: Frame[] = [
   { kind: 'line', text: '✓ 已保存为 Key "ccmax"', tone: 'ok', delay: 650 },
   {
     kind: 'line',
-    parts: [{ text: '  模型    6 ' }, { text: 'claude-opus-5-5, claude-sonnet-4-6, …', tone: 'dim' }],
+    parts: [{ text: '  模型    6 ' }, { text: 'claude-opus-5-5, claude-sonnet-5-5, …', tone: 'dim' }],
     delay: 200,
   },
   { kind: 'line', text: '  可用于  claude pi', delay: 200 },
   { kind: 'type', text: 'tf claude' },
   { kind: 'line', text: '为 claude 选择主模型', tone: 'prompt', delay: 450 },
   { kind: 'line', text: '❯ claude-opus-5-5    ccmax/', tone: 'choice', delay: 250 },
-  { kind: 'line', text: '  claude-sonnet-4-6  ccmax/', tone: 'choice-dim', delay: 250 },
+  { kind: 'line', text: '  claude-sonnet-5-5  ccmax/', tone: 'choice-dim', delay: 250 },
   {
     kind: 'line',
     parts: [
