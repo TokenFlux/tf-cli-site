@@ -1,7 +1,9 @@
 ---
-import { Icon } from 'astro-icon/components';
+import { getAsset } from '~/utils/permalinks';
 ---
 
 <span class="product-logo"
-  ><span class="logo-mark"><Icon name="tabler:terminal-2" /></span>tf-cli<span class="logo-by">by TokenFlux</span></span
+  ><img class="logo-mark" src={getAsset('/assets/logo.svg')} alt="" width="32" height="32" />tf-cli<span class="logo-by"
+    >by TokenFlux</span
+  ></span
 >

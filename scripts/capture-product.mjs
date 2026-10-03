@@ -1,10 +1,12 @@
 // 生成社交分享图与站点图标，不依赖 tf 二进制或真实账户。
 import { chromium } from '@playwright/test';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = path.resolve(import.meta.dirname, '..');
 await mkdir(path.join(root, 'public/assets'), { recursive: true });
+
+const logoData = `data:image/svg+xml;base64,${await readFile(path.join(root, 'public/assets/logo.svg'), 'utf8').then((s) => Buffer.from(s).toString('base64'))}`;
 
 const browser = await chromium.launch({ channel: 'chrome' });
 try {
@@ -19,7 +21,7 @@ try {
       <div style="margin-top:14px;font-size:22px;color:#77777F">Claude Code · Codex · OpenCode · Pi</div>
     </div>
     <div style="position:absolute;left:90px;bottom:56px;display:flex;align-items:center;gap:12px">
-      <div style="display:grid;place-items:center;width:44px;height:44px;border-radius:8px;background:#1F1F23;border:1px solid #333338;color:#00D2FF;font:bold 24px ui-monospace,Menlo,monospace">tf</div>
+      <img src="${logoData}" style="width:44px;height:44px;border-radius:8px">
       <span style="font-size:24px;font-weight:650">tf-cli <span style="color:#55555C;font-weight:500">by TokenFlux</span></span>
     </div>
   </body></html>`);
@@ -28,8 +30,9 @@ try {
 
   const icon = await browser.newPage({ viewport: { width: 180, height: 180 } });
   await icon.setContent(
-    '<html><body style="margin:0;display:grid;place-items:center;width:180px;height:180px;background:#0A0A0C;color:#00D2FF;font:bold 92px ui-monospace,Menlo,monospace;border-radius:36px">tf</body></html>'
+    `<html><body style="margin:0;width:180px;height:180px"><img src="${logoData}" style="width:180px;height:180px;display:block"></body></html>`
   );
+  await icon.locator('img').evaluate((img) => img.complete || img.decode());
   await icon.screenshot({ path: path.join(root, 'public/assets/icon.png') });
   await icon.close();
   console.log('Generated social.png and icon.png with the dark cyan brand skin.');

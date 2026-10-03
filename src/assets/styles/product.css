@@ -63,21 +63,10 @@ select:focus-visible {
   white-space: nowrap;
 }
 .logo-mark {
-  display: grid;
-  place-items: center;
-  background: #18181b;
-  color: #00d2ff;
+  display: block;
   height: 32px;
   width: 32px;
   border-radius: 6px;
-}
-.dark .logo-mark {
-  background: #1f1f23;
-  border: 1px solid #333338;
-}
-.logo-mark svg {
-  width: 22px;
-  height: 22px;
 }
 .logo-by {
   font-size: 11px;
