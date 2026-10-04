@@ -347,7 +347,7 @@ select:focus-visible {
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.9;
-  min-height: 480px;
+  min-height: 320px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   color: var(--term-text);
@@ -380,6 +380,10 @@ select:focus-visible {
 }
 .term-choice-dim {
   color: var(--term-faint);
+}
+.term-faint {
+  color: var(--term-faint);
+  user-select: none;
 }
 .term-cursor {
   display: inline-block;
@@ -1148,7 +1152,7 @@ footer .grid {
   }
   .terminal-body {
     font-size: 11.5px;
-    min-height: 430px;
+    min-height: 290px;
   }
   .clients-inner {
     display: grid;

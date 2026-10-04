@@ -8,34 +8,42 @@ export interface Segment {
 }
 
 export type Frame =
-  { kind: 'type'; text: string } | { kind: 'line'; text?: string; parts?: Segment[]; tone?: FrameTone; delay?: number };
+  | { kind: 'type'; text: string }
+  | { kind: 'line'; text?: string; parts?: Segment[]; tone?: FrameTone; delay?: number }
+  | { kind: 'clear'; text: ''; delay?: number };
 
-// 会话内容与 tf v0.10.0 的真实输出逐行对应（internal/cli/web_import.go、
-// cmd_login.go、cmd_launch.go、internal/ui/select.go）。模型数量、分组名
-// 与端口是演示数据，格式与文案不是。
+// 会话内容与 main 分支 TUI 首页的真实输出逐行对应（internal/cli/app.go
+// runHome / runHomeLaunch、internal/ui/select.go 的渲染格式）。Key 名、
+// 模型与网关是演示数据，格式与文案不是。
+//
+// 选择器里的选中项画在同一行（❯ 前缀 + 高亮），未选中项用暗淡色，与
+// select.go 的实际绘制一致。
 
 const en: Frame[] = [
-  { kind: 'type', text: 'tf login' },
-  { kind: 'line', text: 'Waiting for web import', tone: 'bold', delay: 600 },
-  { kind: 'line', text: '  listen   http://127.0.0.1:52891', delay: 250 },
-  { kind: 'line', text: '  open     https://tokenflux.dev/keys#tfcli=1.52891.…', delay: 250 },
-  { kind: 'line', text: 'Web import received', tone: 'bold', delay: 1400 },
-  { kind: 'line', text: '  group    Max #12', delay: 200 },
-  { kind: 'line', text: '  key      sk-tfx…9k2z  "max"', delay: 200 },
-  { kind: 'line', text: '  name     assigned automatically after validation', delay: 200 },
-  { kind: 'line', text: 'Write to ~/.config/tf/credentials.json?', tone: 'prompt', delay: 700 },
-  { kind: 'line', text: '❯ write', tone: 'choice', delay: 900 },
-  { kind: 'line', text: '✓ saved as key "ccmax"', tone: 'ok', delay: 650 },
+  { kind: 'type', text: 'tf' },
+  { kind: 'line', text: 'tf home', tone: 'bold', delay: 500 },
+  { kind: 'line', text: '❯ Launch an AI tool  Choose Claude Code, Codex, OpenCode, or Pi', tone: 'choice', delay: 300 },
   {
     kind: 'line',
-    parts: [{ text: '  models   6 ' }, { text: 'claude-opus-5-5, claude-sonnet-5-5, …', tone: 'dim' }],
+    text: '  Sign in             Save an API key or import from the web',
+    tone: 'choice-dim',
     delay: 200,
   },
-  { kind: 'line', text: '  can run  claude pi', delay: 200 },
-  { kind: 'type', text: 'tf claude' },
-  { kind: 'line', text: 'Pick the main model for claude', tone: 'prompt', delay: 450 },
-  { kind: 'line', text: '❯ claude-opus-5-5    ccmax/', tone: 'choice', delay: 250 },
-  { kind: 'line', text: '  claude-sonnet-5-5  ccmax/', tone: 'choice-dim', delay: 250 },
+  { kind: 'line', text: '  Check status        Inspect keys, models, and local setup', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  Edit models         Adjust model slots for each tool', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  Exit', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '↑↓ move   enter select   esc exit   type to filter', tone: 'dim', delay: 250 },
+  // —— 按下回车，清屏进入二级菜单 ——
+  { kind: 'clear', text: '', delay: 1100 },
+  { kind: 'line', text: 'Choose a tool to launch', tone: 'bold', delay: 100 },
+  { kind: 'line', text: '❯ claude    ccmax · claude-opus-5-5', tone: 'choice', delay: 300 },
+  { kind: 'line', text: '  codex     ccmax · gpt-5.6', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  opencode  ccmax · gemini-3.1-pro-high', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  pi        ccmax · gpt-5.6', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  Back to home', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '↑↓ move   enter select   esc back to home   type to filter', tone: 'dim', delay: 250 },
+  // —— 回车启动 claude ——
+  { kind: 'clear', text: '', delay: 1100 },
   {
     kind: 'line',
     parts: [
@@ -44,32 +52,30 @@ const en: Frame[] = [
       { text: '   model ', tone: 'dim' },
       { text: 'claude-opus-5-5' },
     ],
-    delay: 1000,
+    delay: 150,
   },
 ];
 
 const zh: Frame[] = [
-  { kind: 'type', text: 'tf login' },
-  { kind: 'line', text: '等待网页导入', tone: 'bold', delay: 600 },
-  { kind: 'line', text: '  监听    http://127.0.0.1:52891', delay: 250 },
-  { kind: 'line', text: '  打开    https://tokenflux.dev/keys#tfcli=1.52891.…', delay: 250 },
-  { kind: 'line', text: '收到网页导入请求', tone: 'bold', delay: 1400 },
-  { kind: 'line', text: '  分组    Max #12', delay: 200 },
-  { kind: 'line', text: '  Key     sk-tfx…9k2z  "max"', delay: 200 },
-  { kind: 'line', text: '  名称    校验后自动命名', delay: 200 },
-  { kind: 'line', text: '写入 ~/.config/tf/credentials.json？', tone: 'prompt', delay: 700 },
-  { kind: 'line', text: '❯ 写入', tone: 'choice', delay: 900 },
-  { kind: 'line', text: '✓ 已保存为 Key "ccmax"', tone: 'ok', delay: 650 },
-  {
-    kind: 'line',
-    parts: [{ text: '  模型    6 ' }, { text: 'claude-opus-5-5, claude-sonnet-5-5, …', tone: 'dim' }],
-    delay: 200,
-  },
-  { kind: 'line', text: '  可用于  claude pi', delay: 200 },
-  { kind: 'type', text: 'tf claude' },
-  { kind: 'line', text: '为 claude 选择主模型', tone: 'prompt', delay: 450 },
-  { kind: 'line', text: '❯ claude-opus-5-5    ccmax/', tone: 'choice', delay: 250 },
-  { kind: 'line', text: '  claude-sonnet-5-5  ccmax/', tone: 'choice-dim', delay: 250 },
+  { kind: 'type', text: 'tf' },
+  { kind: 'line', text: 'tf 首页', tone: 'bold', delay: 500 },
+  { kind: 'line', text: '❯ 启动 AI 工具  选择 Claude Code、Codex、OpenCode 或 Pi', tone: 'choice', delay: 300 },
+  { kind: 'line', text: '  登录          保存 API Key 或从网页导入', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  查看状态      查看 Key、模型和本地配置', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  编辑模型      调整各工具的模型槽位', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  退出', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '↑↓ 移动   enter 确认   esc 退出   直接输入可过滤', tone: 'dim', delay: 250 },
+  // —— 按下回车，清屏进入二级菜单 ——
+  { kind: 'clear', text: '', delay: 1100 },
+  { kind: 'line', text: '选择要启动的工具', tone: 'bold', delay: 100 },
+  { kind: 'line', text: '❯ claude    ccmax · claude-opus-5-5', tone: 'choice', delay: 300 },
+  { kind: 'line', text: '  codex     ccmax · gpt-5.6', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  opencode  ccmax · gemini-3.1-pro-high', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  pi        ccmax · gpt-5.6', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '  返回首页', tone: 'choice-dim', delay: 200 },
+  { kind: 'line', text: '↑↓ 移动   enter 确认   esc 返回首页   直接输入可过滤', tone: 'dim', delay: 250 },
+  // —— 回车启动 claude ——
+  { kind: 'clear', text: '', delay: 1100 },
   {
     kind: 'line',
     parts: [
@@ -78,7 +84,7 @@ const zh: Frame[] = [
       { text: '   模型 ', tone: 'dim' },
       { text: 'claude-opus-5-5' },
     ],
-    delay: 1000,
+    delay: 150,
   },
 ];
 

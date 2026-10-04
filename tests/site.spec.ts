@@ -124,12 +124,12 @@ for (const locale of locales) {
     });
 
     test('terminal replays with motion and rests with reduced motion', async ({ page }) => {
-      // 减少动态：服务端渲染的最终态原样保留，不清空重放
+      // 减少动态：服务端渲染的完整会话原样保留（clear 帧变成静态分隔行）
       await page.emulateMedia({ reducedMotion: 'reduce' });
       await page.goto(`./${locale.path}`);
       await expect(page.locator('.terminal-body .term-line').last()).toBeVisible();
       const reducedCount = await page.locator('.terminal-body .term-line').count();
-      expect(reducedCount).toBeGreaterThan(5);
+      expect(reducedCount).toBeGreaterThan(10);
     });
   });
 }

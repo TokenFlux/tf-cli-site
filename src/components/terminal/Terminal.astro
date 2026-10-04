@@ -9,11 +9,13 @@ export interface Props {
 const { frames, label } = Astro.props;
 
 // 服务端渲染最终态：无 JS、prefers-reduced-motion、爬虫都能看到完整会话。
-// JS 接管后清空并按帧重放。
+// clear 帧在静态渲染时变成分隔行，完整呈现每一屏；JS 播放时才真的清屏。
 type Line = { text?: string; tone: string; parts?: Segment[] };
 const lines: Line[] = [];
 for (const frame of frames) {
-  if (frame.kind === 'type') {
+  if (frame.kind === 'clear') {
+    lines.push({ text: '────────────────────────', tone: 'faint' });
+  } else if (frame.kind === 'type') {
     lines.push({ text: `$ ${frame.text}`, tone: 'typed' });
   } else {
     lines.push({ text: frame.text, tone: frame.tone ?? 'plain', parts: frame.parts });
@@ -64,6 +66,11 @@ for (const frame of frames) {
       while (document.hidden) await sleep(500);
       body.textContent = '';
       for (const frame of frames) {
+        if (frame.kind === 'clear') {
+          await sleep(frame.delay ?? 800);
+          body.textContent = '';
+          continue;
+        }
         if (frame.kind === 'type') {
           const row = document.createElement('div');
           row.className = 'term-line term-typed';
