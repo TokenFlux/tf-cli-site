@@ -31,7 +31,7 @@ for (const frame of frames) {
   <div class="terminal-body" data-frames={JSON.stringify(frames)}>
     {
       lines.map((line) => (
-        <div class={`term-line term-${line.tone}`}>
+        <div class={`term-line term-${line.tone}${line.parts?.some((p) => p.tone === 'claude') ? ' term-art' : ''}`}>
           {line.parts
             ? line.parts.map((p) => <span class={p.tone ? `term-${p.tone}` : undefined}>{p.text}</span>)
             : line.text}
@@ -87,11 +87,13 @@ for (const frame of frames) {
           cursor.remove();
           await sleep(320);
         } else {
-          await sleep(frame.delay ?? 400);
+          const d = frame.delay ?? 400;
+          if (d > 0) await sleep(d);
           const row = document.createElement('div');
           row.className = `term-line term-${frame.tone ?? 'plain'}`;
           if (frame.parts) {
             row.append(...frame.parts.map((p) => span(p.text, p.tone)));
+            if (frame.parts.some((p) => p.tone === 'claude')) row.classList.add('term-art');
           } else {
             row.textContent = frame.text ?? '';
           }
