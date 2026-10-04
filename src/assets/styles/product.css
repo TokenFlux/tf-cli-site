@@ -385,12 +385,9 @@ select:focus-visible {
   color: var(--term-faint);
   user-select: none;
 }
-/* Claude Code 的品牌橙与螃蟹眼块 */
+/* Claude Code 的品牌橙 */
 .term-claude {
   color: #d97757;
-}
-.term-eye {
-  color: #27272a;
 }
 /* 螃蟹 ASCII 艺术行：块字符必须密排才能拼出形状 */
 .term-art {

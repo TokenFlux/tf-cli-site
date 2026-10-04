@@ -1,6 +1,6 @@
 import type { Locale } from '~/i18n/ui';
 
-export type FrameTone = 'plain' | 'dim' | 'ok' | 'bold' | 'prompt' | 'choice' | 'choice-dim' | 'claude' | 'eye';
+export type FrameTone = 'plain' | 'dim' | 'ok' | 'bold' | 'prompt' | 'choice' | 'choice-dim' | 'claude';
 
 export interface Segment {
   text: string;
@@ -20,18 +20,13 @@ export type Frame =
 // delay 为 0 的行不做停顿，一屏的内容在同一帧内全部落下。
 
 // Claude Code 的欢迎画面，两种语言一致（CC 界面本身是英文）。
-// 像素螃蟹 Clawd 用全块字符复刻真实渲染：身体行带两个深色眼块，
-// 手臂行比身体宽一格，两只脚。行高压紧凑才能拼出形状（term-art）。
+// 螃蟹照抄 Claude Code 的真实字形，行高压紧凑才能拼出形状（term-art）。
 const claudeWelcome: Frame[] = [
   { kind: 'line', text: ' ', delay: 0 },
   {
     kind: 'line',
     parts: [
-      { text: ' █', tone: 'claude' },
-      { text: '█', tone: 'eye' },
-      { text: '██', tone: 'claude' },
-      { text: '█', tone: 'eye' },
-      { text: '███', tone: 'claude' },
+      { text: ' ▐▛███▛█', tone: 'claude' },
       { text: '   Claude Code v2.1.289', tone: 'bold' },
     ],
     delay: 0,
@@ -39,7 +34,7 @@ const claudeWelcome: Frame[] = [
   {
     kind: 'line',
     parts: [
-      { text: '██████████', tone: 'claude' },
+      { text: '▝▜██████▀', tone: 'claude' },
       { text: '  claude-opus-5-5 · API Usage Billing', tone: 'plain' },
     ],
     delay: 0,
@@ -47,7 +42,7 @@ const claudeWelcome: Frame[] = [
   {
     kind: 'line',
     parts: [
-      { text: ' ██    ██', tone: 'claude' },
+      { text: ' ▝▝   ▝▝', tone: 'claude' },
       { text: '   ~/projects/demo', tone: 'dim' },
     ],
     delay: 0,
